@@ -1,7 +1,7 @@
 module.exports = {
 
   development: {
-    client: 'sqlite3',
+    client: 'pg',
     connection: {
       filename: 'postgres://localhost/palettePicker'
     }, 
