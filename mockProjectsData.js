@@ -1,12 +1,12 @@
 const mockProjects = [
   {
-    name: 'Project 1',
+    project_name: 'Project 1',
   },
   {
-    name: 'Project 2',
+    project_name: 'Project 2',
   },
   {
-    name: 'Project 3',
+    project_name: 'Project 3',
   }
 ];
 

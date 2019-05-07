@@ -2,8 +2,9 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 const express = require('express');
+const bodyParser = require('body-parser')
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3001);
 
 app.get('/api/v1/projects', (request, response) => {
