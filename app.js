@@ -115,7 +115,7 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
       if (!foundPalette) {
         database('palettes').insert(palette, 'id')
           .then(id => {
-            response.status(201).json({ id: id[0] })
+            response.status(201).json({ id: id[0], ...palette })
           })
       }
     })
@@ -213,7 +213,7 @@ app.delete('/api/v1/palettes/:id', (request, response) => {
       .del()
       .then(() => {
         response
-          .json(`Successfully deleted course with id: ${idForDelete}`)
+          .json(`Successfully deleted palette with id: ${idForDelete}`)
       })
       .catch(error => {
         response.status(500).json({ error })
