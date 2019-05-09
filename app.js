@@ -4,10 +4,10 @@ const database = require('knex')(configuration);
 const express = require('express');
 const app = express();
 app.use(express.json());
-const bodyParser = require('body-parser')
-app.use(bodyParser.json());
-const cors = require('cors')
-app.use(cors())
+// const bodyParser = require('body-parser')
+// app.use(bodyParser.json());
+// const cors = require('cors')
+// app.use(cors())
 
 app.get('/api/v1/projects', (request, response) => {
   database('projects').select()
@@ -34,6 +34,20 @@ app.get('/api/v1/projects/:id', (request, response) => {
       response.status(500).json(`Something went wrong with the server: ${error}`);
     });
 });
+
+app.get('/api/v1/projects/:id/palettes', (request, response) => {
+  database('palettes').where('id', request.params.id).select()
+    .then(palettes => {
+      if (palettes.length) {
+        response.status(200).json(palettes)
+      } else {
+        response.status(404).json({ Error: `Could not find palettes for Project_ID: ${request.params.id}`})
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
+})
 
 app.post('/api/v1/projects', (request, response) => {
   const project = request.body
