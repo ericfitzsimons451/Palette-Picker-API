@@ -12,7 +12,6 @@ describe('/api/v1', () => {
     it('should return all projects in database', async () => {
       const expected = await database('projects').select()
       const response = await request(server).get('/api/v1/projects')
-      console.log(response.body)
       expect(response.status).toBe(200)
       expect(response.body.length).toBe(expected.length)
     });
