@@ -5,7 +5,6 @@ const request = require('supertest')
 const app = require('./app')
 
 describe('/api/v1', () => {
-
   beforeEach(async () => {
     await database.seed.run();
   });
@@ -41,9 +40,7 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200)
       expect(response.body.length).toBe(expectedPalettes.length)
     })
-  })
-
-  
+  })  
 
   describe('PUT /projects/:id', () => {
     it('should update a project name based on request.params.id', async () => {
@@ -62,7 +59,7 @@ describe('/api/v1', () => {
       const project = await database('projects').first()
       const id = project.id
       const palettes = await database('palettes').where('project_id', id).first()
-      const palette_id = palettes.id
+      const palette_id = palettes.id.toString()
       const newPalette = {
         color_one: 'asdf',
         color_two: 'asdf',
@@ -71,6 +68,7 @@ describe('/api/v1', () => {
         color_five: 'asdf'
       }
       const response = await request(app).put(`/api/v1/projects/${id}/palettes/${palette_id}`).send(newPalette)
+      expect(response.body).toEqual({palette_id: palette_id, ...newPalette})
     })
   })
 
