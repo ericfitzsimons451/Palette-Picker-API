@@ -58,12 +58,12 @@ app.get('/api/v1/projects/:id/palettes/:id', (request, response) => {
       if (palette.length) {
         response.status(200).json(palette)
       } else {
-        response.status(404).json({ error: `Could not find palette with id: ${request.params.id}.`})
+        response.status(404).json({ error: `Could not find palette with id: ${request.params.id}.` })
       }
     })
-   .catch(error => {
-     response.status(500).json({ error })
-   })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
 })
 
 app.post('/api/v1/projects', (request, response) => {
@@ -90,15 +90,17 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
   for (let requiredParam of ['project_id', 'color_one', 'color_two', 'color_three', 'color_four', 'color_five']) {
     if (palette[requiredParam] === undefined) {
       return response
-              .status(422)
-              .send({ error: `Expected format: {
+        .status(422)
+        .send({
+          error: `Expected format: {
                 project_id: <Integer>,
                 color_one: <String>,
                 color_two: <String>,
                 color_three: <String>,
                 color_four: <String>,
                 color_five: <String>
-              }.  You are missing a ${requiredParam} property.`})
+              }.  You are missing a ${requiredParam} property.`
+        })
     }
   }
 
@@ -120,20 +122,22 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
 })
 
 app.delete('/api/v1/projects/:id', (request, response) => {
-  database('projects').where('id', request.params.id).del()
-    .then(result => {
-      if (result > 0) {
-        response.status(200).json(`Deleted project with id ${request.params.id}`)
-      } else {
-        response.status(404).json({
-          error: `Could not find project with id ${request.params.id}`
+  const { id } = request.params;
+  database('palettes').where('project_id', id).del()
+    .then(rows => {
+      database('projects').where('id', id).del()
+        .then(result => {
+          if (result > 0) {
+            response.status(200).json(`Project with the id: ${id} and it's palettes have been deleted.`)
+          } else {
+            response.status(404).json(`Project with the id:${id} was not found.`)
+          }
         })
-      }
     })
     .catch(error => {
-      response.status(500).json(`Something went wrong with the server: ${error}`)
+      response.status(500).json({ error })
     })
-})
+});
 
 app.put('/api/v1/projects/:id', (request, response) => {
   const { id } = request.params
@@ -164,7 +168,7 @@ app.put('/api/v1/projects/:id', (request, response) => {
     .catch(error => {
       response.status(500).json({ error })
     })
-}) 
+})
 
 app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
   const { palette_id } = request.params
@@ -181,7 +185,7 @@ app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
       palettes.forEach(palette => {
         if (palette.id === parseInt(palette_id)) {
           found = true
-        } 
+        }
       })
       if (!found) {
         return response.status(404).json(`Palette ${palette_id} does not exist.`)
@@ -211,9 +215,9 @@ app.delete('/api/v1/palettes/:id', (request, response) => {
         response
           .json(`Successfully deleted course with id: ${idForDelete}`)
       })
-    .catch(error => {
-      response.status(500).json({ error })
-    })
+      .catch(error => {
+        response.status(500).json({ error })
+      })
   }
 })
 
