@@ -5,9 +5,11 @@ const request = require('supertest')
 const server = require('./app')
 
 describe('/api/v1', () => {
+
   beforeEach(async () => {
     await database.seed.run();
   });
+
   describe('GET /projects', () => {
     it('should return all projects in database', async () => {
       const expected = await database('projects').select()
@@ -16,4 +18,6 @@ describe('/api/v1', () => {
       expect(response.body.length).toBe(expected.length)
     });
   });
+
+  
 });
