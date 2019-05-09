@@ -99,6 +99,22 @@ describe('/api/v1', () => {
     });
   });
 
+  describe('POST /projects/:id/palettes', () => {
+    it('should add a new palette', async () => {
+      const newPalette = {
+        color_one: 'asdf',
+        color_two: 'asdf',
+        color_three: 'asdf',
+        color_four: 'asdf',
+        color_five: 'asdf'
+      }
+      const project = await database('projects').first()
+      const project_id = project.id
+      const response = await request(app).post(`/api/v1/projects/${project_id}/palettes`)
+      expect(response.body.id).toEqual(newPalette.id)
+    })
+  })
+
   describe('DELETE /projects/:id', () => {
     it('should delete a project from the database', async () => {
       const projectToDelete = await database('projects').first();
