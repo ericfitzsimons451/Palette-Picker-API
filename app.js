@@ -166,6 +166,37 @@ app.put('/api/v1/projects/:id', (request, response) => {
     })
 }) 
 
+app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
+  const { palette_id } = request.params
+  const { color_one, color_two, color_three, color_four, color_five } = request.body
+  let found = false
+
+  for (let requiredParameters of ["color_one", "color_two", "color_three", "color_four", "color_five"]) {
+    if (request.body[requiredParameters] === undefined) {
+      response.status(422).json(`Error: missing ${requiredParameter}`)
+    }
+  }
+  database('palettes').select()
+    .then(palettes => {
+      palettes.forEach(palette => {
+        if (palette.id === parseInt(palette_id)) {
+          found = true
+        } 
+      })
+      if (!found) {
+        return response.status(404).json(`Palette ${palette_id} does not exist.`)
+      } else {
+        database('palettes').where('id', palette_id).update({ color_one, color_two, color_three, color_four, color_five })
+          .then(palette => {
+            response.status(200).json({ palette_id, ...request.body })
+          })
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
+})
+
 app.delete('/api/v1/palettes/:id', (request, response) => {
   const idForDelete = request.params.id
   if (!idForDelete) {
