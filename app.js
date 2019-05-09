@@ -2,10 +2,12 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 const express = require('express');
-const app = express();
-app.use(express.json());
 const bodyParser = require('body-parser')
+const app = express();
+const cors = require('cors')
+app.use(express.json());
 app.use(bodyParser.json());
+app.use(cors())
 // const cors = require('cors')
 // app.use(cors())
 
@@ -34,6 +36,21 @@ app.get('/api/v1/projects/:id', (request, response) => {
       response.status(500).json(`Something went wrong with the server: ${error}`);
     });
 });
+
+app.get('/api/v1/projects/:id/palettes', (request, response) => {
+  database('palettes')
+    .where('project_id', request.params.id).select()
+    .then(palettes => {
+      if (palettes.length) {
+        response.status(200).json(palettes)
+      } else {
+        response.status(404).json(`There are no palettes for project ${request.params.id}`)
+      }
+    })
+    .catch(error => {
+      response.status(500).json(`Something went wrong with the server: ${error}`);
+    })
+})
 
 app.get('/api/v1/projects/:id/palettes/:id', (request, response) => {
   database('palettes').where('id', request.params.id).select()
@@ -117,6 +134,37 @@ app.delete('/api/v1/projects/:id', (request, response) => {
       response.status(500).json(`Something went wrong with the server: ${error}`)
     })
 })
+
+app.put('/api/v1/projects/:id', (request, response) => {
+  const { id } = request.params
+  const { project_name } = request.body
+  let found = false
+
+  for (let requiredParameter of ['project_name']) {
+    if (request.body[requiredParameter] === undefined) {
+      response.status(422).json(`Error: missing ${requiredParameter}`)
+    }
+  }
+  database('projects').select()
+    .then(projects => {
+      projects.forEach(project => {
+        if (project.id === parseInt(id)) {
+          found = true
+        }
+      })
+      if (!found) {
+        return response.status(404).json(`Project ${id} was not found.`)
+      } else {
+        database('projects').where('id', id).update({ project_name })
+          .then(project => {
+            response.status(200).json({ id, ...request.body })
+          })
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
+}) 
 
 app.delete('/api/v1/palettes/:id', (request, response) => {
   const idForDelete = request.params.id
