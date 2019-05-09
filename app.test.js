@@ -27,6 +27,14 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200);
       expect(result.project_name).toEqual(expectedProject.project_name);
     });
+
+    it('should return an error message if id doesnt exist', async () => {
+      const id = 99999;
+      const response = await request(app).get(`/api/v1/projects/${id}`);
+      const expectedText = `{\"error\":\"Could not find project 99999\"}`;
+      expect(response.status).toBe(404);
+      expect(response.text).toEqual(expectedText);
+    });
   });
 
   describe('GET /projects/:id/palettes', () => {
@@ -50,6 +58,14 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200)
       expect(response.body[0].color_one).toEqual(palettes.color_one)
     })
+
+    it('should return an error message if id doesnt exist', async () => {
+      const id = 99999;
+      const response = await request(app).get(`/api/v1/projects/${id}/palettes`);
+      const expectedText = `"There are no palettes for project 99999\"`;
+      expect(response.status).toBe(404);
+      expect(response.text).toEqual(expectedText);
+    });
   })
 
   describe('PUT /projects/:id', () => {
@@ -94,6 +110,16 @@ describe('/api/v1', () => {
       const project = projects[0];
       expect(response.status).toBe(201);
       expect(project.project_name).toEqual(newProject.project_name);
+    });
+
+    it('should give an error message if project_name isnt given', async () => {
+      const newProject = { project_name: '' }
+      const response = await request(app)
+        .post('/api/v1/projects')
+        .send(newProject);
+      const expectedMsg = `{\"error\":\"Expected format: { project_name: <String> }. You're missing the project_name property.\"}`;
+      expect(response.status).toBe(422);
+      expect(response.text).toEqual(expectedMsg);
     });
   });
 
