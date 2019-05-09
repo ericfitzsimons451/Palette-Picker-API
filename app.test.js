@@ -19,6 +19,19 @@ describe('/api/v1', () => {
     });
   });
 
+  describe('GET /projects/id', () => {
+    it('should return a single project', async () => {
+      const expectedProject = await database('projects').first();
+      const id = expectedProject.id;
+
+      const response = await request(app).get(`/api/v1/projects/${id}`);
+      const result = response.body[0];
+
+      expect(response.status).toBe(200);
+      expect(result.project_name).toEqual(expectedProject.project_name);
+    });
+  });
+
   describe('GET /projects/:id/palettes', () => {
     it('should return all palettes in a project based on the request.params.id', async () => {
       const project = await database('projects').first()
@@ -29,6 +42,8 @@ describe('/api/v1', () => {
       expect(response.body.length).toBe(expectedPalettes.length)
     })
   })
+
+  
 
   describe('PUT /projects/:id', () => {
     it('should update a project name based on request.params.id', async () => {
@@ -41,26 +56,29 @@ describe('/api/v1', () => {
       expect(response.body.project_name).toBe(newProject.project_name)
     })
   })
-});
 
-  describe('GET /projects/id', () => {
-    it('should return a single project', async () => {
-      const expectedProject = await database('projects').first();
-      const id = expectedProject.id;
-
-      const response = await request(server).get(`/api/v1/projects/${id}`);
-      const result = response.body[0];
-
-      expect(response.status).toBe(200);
-      expect(result.project_name).toEqual(expectedProject.project_name);
-    });
-  });
+  describe('PUT /projects/:id/palettes/:palette_id', () => {
+    it('should return a palette from a project based on the request.params.id', async () => {
+      const project = await database('projects').first()
+      const id = project.id
+      const palettes = await database('palettes').where('project_id', id).first()
+      const palette_id = palettes.id
+      const newPalette = {
+        color_one: 'asdf',
+        color_two: 'asdf',
+        color_three: 'asdf',
+        color_four: 'asdf',
+        color_five: 'asdf'
+      }
+      const response = await request(app).put(`/api/v1/projects/${id}/palettes/${palette_id}`).send(newPalette)
+    })
+  })
 
   describe('POST /projects', () => {
     it('should post a new project to the db', async () => {
-      const newProject = { project_name: 'Oi' }
+      const newProject = { project_name: 'Pugs, man.  Pugs.' }
 
-      const response = await request(server)
+      const response = await request(app)
         .post('/api/v1/projects')
         .send(newProject);
 
@@ -75,16 +93,13 @@ describe('/api/v1', () => {
   describe('DELETE /projects/:id', () => {
     it('should delete a project from the database', async () => {
       const projectToDelete = await database('projects').first();
-      const id = projectToDelete.id
-      console.log(id)
-      
-      const response = await request(server).delete(`/api/v1/projects/${id}`);
-      console.log(response.text)
+      const id = projectToDelete.id      
+      const response = await request(app).delete(`/api/v1/projects/${id}`);
       const expectedMsg = `\"Project with the id: ${id} and it's palettes have been deleted.\"`;
-
       expect(response.status).toBe(200);
       expect(response.text).toBe(expectedMsg);
     });
-  });
+  })
 });
+
 
