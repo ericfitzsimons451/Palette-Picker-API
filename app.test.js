@@ -29,4 +29,16 @@ describe('/api/v1', () => {
       expect(response.body.length).toBe(expectedPalettes.length)
     })
   })
+
+  describe('PUT /projects/:id', () => {
+    it('should update a project name based on request.params.id', async () => {
+      const project = await database('projects').first()
+      const id = project.id
+      const newProject = {
+        project_name: 'Justin Rules'
+      }
+      const response = await request(app).put(`/api/v1/projects/${id}`).send(newProject)
+      expect(response.body.project_name).toBe(newProject.project_name)
+    })
+  })
 });
