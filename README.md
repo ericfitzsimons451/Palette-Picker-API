@@ -226,22 +226,12 @@
 ## Future Iterations
 
 ## Screenshots
-### Welcome View
-<img width="1377" alt="Screen Shot 2019-04-10 at 6 28 01 AM" src="https://user-images.githubusercontent.com/39415039/55887448-c3bb3e00-5b6a-11e9-94a6-6df7b8776970.png">
 
-### Card Edit View
-<img width="1382" alt="Screen Shot 2019-04-10 at 8 20 44 AM" src="https://user-images.githubusercontent.com/39415039/55887808-74294200-5b6b-11e9-9e6b-8fb8ff9cdedf.png">
-
-### Card Display View
-<img width="1390" alt="Screen Shot 2019-04-10 at 8 25 51 AM" src="https://user-images.githubusercontent.com/39415039/55887222-5d362000-5b6a-11e9-9ab2-2206be1747b6.png">
-
-### Error 404 View
-<img width="1387" alt="Screen Shot 2019-04-10 at 8 27 39 AM" src="https://user-images.githubusercontent.com/39415039/55887322-8e165500-5b6a-11e9-965c-fe842b7ace6d.png">
 
 ### Wireframe
 <img width="799" alt="Screen Shot 2019-04-01 at 2 59 15 PM" src="https://user-images.githubusercontent.com/39415039/55359304-c1802200-548e-11e9-93a6-69ae1b766e44.png">
 
 ## Contributors
 [Eric Fitzsimons](https://github.com/ericfitzsimons451) \
-[Gabe Inzurriaga](https://github.com/inzurriaga) \
-[Tom Wilhoit](https://github.com/tomwilhoit)
+[Justin Torrance](https://github.com/justintorrance) \
+[David Cisneros](https://github.com/developingdavid)
