@@ -18,7 +18,7 @@ describe('/api/v1', () => {
     });
   });
 
-  describe('GET /projects/id', () => {
+  describe('GET /projects/:id', () => {
     it('should return a single project', async () => {
       const expectedProject = await database('projects').first();
       const id = expectedProject.id;
@@ -41,6 +41,17 @@ describe('/api/v1', () => {
       expect(response.body.length).toBe(expectedPalettes.length)
     })
   })  
+
+  describe('GET /projects/:id/palettes/:palette_id', () => {
+    it('should return a single palette with the specified id', async () => {
+      const project = await database('projects').first()
+      const id = project.id
+      const palettes = await database('palettes').where('project_id', id).first()
+      const palette_id = palettes.id
+      const response = await request(app).get(`/api/v1/projects/${id}/palettes/${palette_id}`)
+      expect(response.body[0].color_one).toEqual(palettes.color_one)
+    })
+  })
 
   describe('PUT /projects/:id', () => {
     it('should update a project name based on request.params.id', async () => {
