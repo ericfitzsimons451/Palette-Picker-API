@@ -35,6 +35,21 @@ app.get('/api/v1/projects/:id', (request, response) => {
     });
 });
 
+app.get('/api/v1/projects/:id/palettes', (request, response) => {
+  database('palettes')
+    .where('project_id', request.params.id).select()
+    .then(palettes => {
+      if (palettes.length) {
+        response.status(200).json(palettes)
+      } else {
+        response.status(404).json(`There are no palettes for project ${request.params.id}`)
+      }
+    })
+    .catch(error => {
+      response.status(500).json(`Something went wrong with the server: ${error}`);
+    })
+})
+
 app.post('/api/v1/projects', (request, response) => {
   const project = request.body
   for (let requiredParam of ['project_name']) {
