@@ -6,7 +6,7 @@ services:
 
 before_script:
   - psql -c "create database palettepicker_test;" -U postgres
-  - npm migrate
+  - npm run migrate
 
 test:
   adapter: postgresql
