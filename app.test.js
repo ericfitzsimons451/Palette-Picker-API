@@ -145,6 +145,21 @@ describe('/api/v1', () => {
       expect(response.text).toEqual(`Error: Missing color_two.`)
     })
 
+    it('should return an error if the id is incorrect', async () => {
+      const palette = await database('palettes').first()
+      const projectId = palette.project_id
+      const paletteId = 9999999999
+      const newPalette = {
+        color_one: 'asdf',
+        color_two: 'asdf',
+        color_three: 'asdf',
+        color_four: 'asdf',
+        color_five: 'asdf'
+      }
+      const response = await request(app).put(`/api/v1/projects/${projectId}/palettes/${paletteId}`).send(newPalette)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(`Palette ${paletteId} does not exist.`)
+    })
   })
 
   describe('POST /projects', () => {
