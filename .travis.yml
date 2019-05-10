@@ -6,7 +6,7 @@ services:
 
 before_script:
   - psql -c "create database palettepicker_test;" -U postgres
-  - cp config/database.yml.travis config/palettepicker_test.yml
+  - npm migrate
 
 test:
   adapter: postgresql
