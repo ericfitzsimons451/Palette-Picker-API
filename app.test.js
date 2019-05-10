@@ -46,6 +46,14 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200)
       expect(response.body.length).toBe(expectedPalettes.length)
     })
+
+    it('should return an error message if id doesnt exist', async () => {
+      const id = 99999
+      const expectedText = `{\"error\":\"Could not find project 99999\"}`
+      const response = await request(app).get(`/api/v1/projects/${id}`)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(expectedText)
+    } )
   })  
 
   describe('GET /projects/:id/palettes/:palette_id', () => {
