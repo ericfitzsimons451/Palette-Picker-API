@@ -186,6 +186,18 @@ describe('/api/v1', () => {
       expect(response.status).toBe(201);
       expect(response.body.project_id).toEqual(project_id)
     })
+    it('should return a status 422 and an error if a required parameter is missing', async () => {
+      const project = await database('projects').first()
+      const project_id = project.id
+      const newPalette = {
+        color_one: 'a',
+        color_three: 'b',
+        color_four: 'c',
+        color_five: 'd'
+      }
+      const response = await request(app).post(`/api/v1/projects/${project_id}/palettes`).send(newPalette)
+      expect(response.status).toBe(422)
+    })
   })
 
   describe('DELETE /projects/:id', () => {
