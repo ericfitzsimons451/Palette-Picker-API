@@ -25,7 +25,7 @@ app.get('/api/v1/projects/:id', (request, response) => {
       } else {
         response.status(404).send(
           `Error: Could not find project ${request.params.id}.`
-        );
+      );
       }
     })
     .catch(error => {
