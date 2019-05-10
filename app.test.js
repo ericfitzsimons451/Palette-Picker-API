@@ -132,7 +132,6 @@ describe('/api/v1', () => {
 
     it('should return an error if there is a missing parameter', async () => {
       const palette = await database('palettes').first()
-      console.log("palette", palette)
       const projectId = palette.project_id
       const paletteId = palette.id
       const newPalette = {
@@ -142,7 +141,6 @@ describe('/api/v1', () => {
         color_five: 'asdf'
       }
       const response = await request(app).put(`/api/v1/projects/${projectId}/palettes/${paletteId}`).send(newPalette)
-      console.log("responsebody", response)
       expect(response.status).toBe(422)
       expect(response.text).toEqual(`Error: Missing color_two.`)
     })
