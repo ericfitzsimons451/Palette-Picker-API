@@ -4,7 +4,6 @@ const database = require('knex')(configuration);
 const express = require('express');
 const bodyParser = require('body-parser')
 const app = express();
-const cors = require('cors')
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -26,7 +25,7 @@ app.get('/api/v1/projects/:id', (request, response) => {
       } else {
         response.status(404).send(
           `Error: Could not find project ${request.params.id}.`
-      );
+        );
       }
     })
     .catch(error => {
