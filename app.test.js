@@ -98,6 +98,18 @@ describe('/api/v1', () => {
       expect(response.status).toBe(404)
       expect(response.text).toEqual(expectedText)
     })
+
+    it('should return an error if there are missing parameters', async () => {
+      const project = await database('projects').first()
+      const projectId = project.id
+      const newProject = {
+        id: projectId
+      }
+      const expectedText = `Error: Missing project_name.`
+      const response = await request(app).put(`/api/v1/projects/${projectId}`).send(newProject)
+      expect(response.status).toBe(422)
+      expect(response.text).toEqual(expectedText)
+    })
   })
 
   describe('PUT /projects/:id/palettes/:palette_id', () => {
@@ -117,6 +129,24 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200)
       expect(response.body).toEqual({palette_id: palette_id, ...newPalette})
     })
+
+    it('should return an error if there is a missing parameter', async () => {
+      const palette = await database('palettes').first()
+      console.log("palette", palette)
+      const projectId = palette.project_id
+      const paletteId = palette.id
+      const newPalette = {
+        color_one: 'asdf',
+        color_three: 'asdf',
+        color_four: 'asdf',
+        color_five: 'asdf'
+      }
+      const response = await request(app).put(`/api/v1/projects/${projectId}/palettes/${paletteId}`).send(newPalette)
+      console.log("responsebody", response)
+      expect(response.status).toBe(422)
+      expect(response.text).toEqual(`Error: Missing color_two.`)
+    })
+
   })
 
   describe('POST /projects', () => {
