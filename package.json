@@ -4,7 +4,11 @@
   "description": "An API for choosing colors.",
   "main": "server.js",
   "scripts": {
-    "test": "jest"
+    "start": "server.js",
+    "start:nodemon": "server.js",
+    "test": "jest --forceExit",
+    "migrate": "knex migrate:latest --env=test",
+    "seed": "knex seed:run --env=test"
   },
   "keywords": [],
   "author": "",

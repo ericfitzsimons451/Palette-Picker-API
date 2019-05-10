@@ -7,9 +7,6 @@ const app = express();
 const cors = require('cors')
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors())
-// const cors = require('cors')
-// app.use(cors())
 
 app.get('/api/v1/projects', (request, response) => {
   database('projects').select()
@@ -27,13 +24,13 @@ app.get('/api/v1/projects/:id', (request, response) => {
       if (projects.length) {
         response.status(200).json(projects);
       } else {
-        response.status(404).json({
-          error: `Could not find project ${request.params.id}`
-        });
+        response.status(404).send(
+          `Error: Could not find project ${request.params.id}.`
+      );
       }
     })
     .catch(error => {
-      response.status(500).json(`Something went wrong with the server: ${error}`);
+      response.status(500).send({ error });
     });
 });
 
@@ -44,11 +41,11 @@ app.get('/api/v1/projects/:id/palettes', (request, response) => {
       if (palettes.length) {
         response.status(200).json(palettes)
       } else {
-        response.status(404).json(`There are no palettes for project ${request.params.id}`)
+        response.status(404).send(`There are no palettes for project ${request.params.id}.`)
       }
     })
     .catch(error => {
-      response.status(500).json(`Something went wrong with the server: ${error}`);
+      response.status(500).send({ error });
     })
 })
 
@@ -72,7 +69,7 @@ app.post('/api/v1/projects', (request, response) => {
     if (!project[requiredParam]) {
       return response
         .status(422)
-        .send({ error: `Expected format: { project_name: <String> }. You're missing the ${requiredParam} property.` })
+        .send(`Error: Expected format: { project_name: <String> }. You're missing the ${requiredParam} property.`)
     }
   }
 
@@ -81,7 +78,7 @@ app.post('/api/v1/projects', (request, response) => {
       response.status(201).json({ id: projects[0] });
     })
     .catch(error => {
-      response.status(500).json(`Something went wrong with the server: ${error}`);
+      response.status(500).send({ error });
     });
 });
 
@@ -128,9 +125,9 @@ app.delete('/api/v1/projects/:id', (request, response) => {
       database('projects').where('id', id).del()
         .then(result => {
           if (result > 0) {
-            response.status(200).json(`Project with the id: ${id} and it's palettes have been deleted.`)
+            response.status(200).send(`Project with the id: ${id} and it's palettes have been deleted.`)
           } else {
-            response.status(404).json(`Project with the id:${id} was not found.`)
+            response.status(404).send(`Project with the id:${id} was not found.`)
           }
         })
     })
@@ -146,7 +143,7 @@ app.put('/api/v1/projects/:id', (request, response) => {
 
   for (let requiredParameter of ['project_name']) {
     if (request.body[requiredParameter] === undefined) {
-      response.status(422).json(`Error: missing ${requiredParameter}`)
+      response.status(422).send(`Error: Missing ${requiredParameter}.`)
     }
   }
   database('projects').select()
@@ -157,7 +154,7 @@ app.put('/api/v1/projects/:id', (request, response) => {
         }
       })
       if (!found) {
-        return response.status(404).json(`Project ${id} was not found.`)
+        return response.status(404).send(`Project ${id} was not found.`)
       } else {
         database('projects').where('id', id).update({ project_name })
           .then(project => {
@@ -173,13 +170,14 @@ app.put('/api/v1/projects/:id', (request, response) => {
 app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
   const { palette_id } = request.params
   const { color_one, color_two, color_three, color_four, color_five } = request.body
-  let found = false
+  let found = false;
 
   for (let requiredParameters of ["color_one", "color_two", "color_three", "color_four", "color_five"]) {
     if (request.body[requiredParameters] === undefined) {
-      response.status(422).json(`Error: missing ${requiredParameter}`)
+      response.status(422).send(`Error: Missing ${requiredParameters}.`)
     }
   }
+
   database('palettes').select()
     .then(palettes => {
       palettes.forEach(palette => {
@@ -188,10 +186,10 @@ app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
         }
       })
       if (!found) {
-        return response.status(404).json(`Palette ${palette_id} does not exist.`)
+        return response.status(404).send(`Palette ${palette_id} does not exist.`)
       } else {
         database('palettes').where('id', palette_id).update({ color_one, color_two, color_three, color_four, color_five })
-          .then(palette => {
+          .then(() => {
             response.status(200).json({ palette_id, ...request.body })
           })
       }
@@ -204,16 +202,15 @@ app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
 app.delete('/api/v1/palettes/:id', (request, response) => {
   const idForDelete = request.params.id
   if (!idForDelete) {
-    response.status(422).json({
-      error: `Missing id from request parameters`
-    })
+    response.status(422).send(`Error: Missing id from request parameters.`
+    )
   } else {
     database('palettes')
       .where('id', request.params.id)
       .del()
       .then(() => {
         response
-          .json(`Successfully deleted palette with id: ${idForDelete}`)
+          .send(`Successfully deleted palette with id: ${idForDelete}.`)
       })
       .catch(error => {
         response.status(500).json({ error })

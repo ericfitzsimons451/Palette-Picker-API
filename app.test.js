@@ -31,7 +31,7 @@ describe('/api/v1', () => {
     it('should return an error message if id doesnt exist', async () => {
       const id = 99999;
       const response = await request(app).get(`/api/v1/projects/${id}`);
-      const expectedText = `{\"error\":\"Could not find project 99999\"}`;
+      const expectedText = `Error: Could not find project ${id}.`;
       expect(response.status).toBe(404);
       expect(response.text).toEqual(expectedText);
     });
@@ -46,6 +46,14 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200)
       expect(response.body.length).toBe(expectedPalettes.length)
     })
+
+    it('should return an error message if id doesnt exist', async () => {
+      const id = 99999
+      const expectedText = `Error: Could not find project ${id}.`
+      const response = await request(app).get(`/api/v1/projects/${id}`)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(expectedText)
+    } )
   })  
 
   describe('GET /projects/:id/palettes/:palette_id', () => {
@@ -62,7 +70,7 @@ describe('/api/v1', () => {
     it('should return an error message if id doesnt exist', async () => {
       const id = 99999;
       const response = await request(app).get(`/api/v1/projects/${id}/palettes`);
-      const expectedText = `"There are no palettes for project 99999\"`;
+      const expectedText = `There are no palettes for project ${id}.`;
       expect(response.status).toBe(404);
       expect(response.text).toEqual(expectedText);
     });
@@ -78,6 +86,29 @@ describe('/api/v1', () => {
       const response = await request(app).put(`/api/v1/projects/${id}`).send(newProject)
       expect(response.status).toBe(200)
       expect(response.body.project_name).toBe(newProject.project_name)
+    })
+
+    it('should return an error if the project id is invalid', async () => {
+      const newProject = {
+        id: 99999,
+        project_name: "Justin Rules"
+      }
+      const expectedText = `Project ${newProject.id} was not found.`
+      const response = await request(app).put(`/api/v1/projects/${newProject.id}`).send(newProject)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(expectedText)
+    })
+
+    it('should return an error if there are missing parameters', async () => {
+      const project = await database('projects').first()
+      const projectId = project.id
+      const newProject = {
+        id: projectId
+      }
+      const expectedText = `Error: Missing project_name.`
+      const response = await request(app).put(`/api/v1/projects/${projectId}`).send(newProject)
+      expect(response.status).toBe(422)
+      expect(response.text).toEqual(expectedText)
     })
   })
 
@@ -98,6 +129,22 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200)
       expect(response.body).toEqual({palette_id: palette_id, ...newPalette})
     })
+
+    it('should return an error if there is a missing parameter', async () => {
+      const palette = await database('palettes').first()
+      const projectId = palette.project_id
+      const paletteId = palette.id
+      const newPalette = {
+        color_one: 'asdf',
+        color_three: 'asdf',
+        color_four: 'asdf',
+        color_five: 'asdf'
+      }
+      const response = await request(app).put(`/api/v1/projects/${projectId}/palettes/${paletteId}`).send(newPalette)
+      expect(response.status).toBe(422)
+      expect(response.text).toEqual(`Error: Missing color_two.`)
+    })
+
   })
 
   describe('POST /projects', () => {
@@ -117,9 +164,9 @@ describe('/api/v1', () => {
       const response = await request(app)
         .post('/api/v1/projects')
         .send(newProject);
-      const expectedMsg = `{\"error\":\"Expected format: { project_name: <String> }. You're missing the project_name property.\"}`;
+      const expectedMsg = `Error: Expected format: { project_name: <String> }. You're missing the project_name property.`;
       expect(response.status).toBe(422);
-      expect(response.text).toEqual(expectedMsg);
+      expect(response.text).toBe(expectedMsg);
     });
   });
 
@@ -146,7 +193,7 @@ describe('/api/v1', () => {
       const projectToDelete = await database('projects').first();
       const id = projectToDelete.id      
       const response = await request(app).delete(`/api/v1/projects/${id}`);
-      const expectedMsg = `\"Project with the id: ${id} and it's palettes have been deleted.\"`;
+      const expectedMsg = `Project with the id: ${id} and it's palettes have been deleted.`;
       expect(response.status).toBe(200);
       expect(response.text).toBe(expectedMsg);
     });
@@ -157,9 +204,9 @@ describe('/api/v1', () => {
       const paletteToDelete = await database('palettes').first();
       const id = paletteToDelete.id      
       const response = await request(app).delete(`/api/v1/palettes/${id}`);
-      const expectedMsg = `\"Successfully deleted palette with id: ${id}\"`;
+      const expectedMsg = `Successfully deleted palette with id: ${id}.`;
       expect(response.status).toBe(200);
-      expect(response.text).toBe(expectedMsg);
+      expect(response.text).toEqual(expectedMsg);
     })
   })
 });
