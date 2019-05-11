@@ -201,6 +201,18 @@ describe('/api/v1', () => {
       expect(response.status).toBe(201);
       expect(response.body.project_id).toEqual(project_id)
     })
+    it('should return a status 422 and an error if a required parameter is missing', async () => {
+      const project = await database('projects').first()
+      const project_id = project.id
+      const newPalette = {
+        color_one: 'a',
+        color_three: 'b',
+        color_four: 'c',
+        color_five: 'd'
+      }
+      const response = await request(app).post(`/api/v1/projects/${project_id}/palettes`).send(newPalette)
+      expect(response.status).toBe(422)
+    })
   })
 
   describe('DELETE /projects/:id', () => {
@@ -218,10 +230,17 @@ describe('/api/v1', () => {
     it('should delete a palette by id', async () => {
       const paletteToDelete = await database('palettes').first();
       const id = paletteToDelete.id      
-      const response = await request(app).delete(`/api/v1/palettes/${id}`);
-      const expectedMsg = `Successfully deleted palette with id: ${id}.`;
+      const response = await request(app).delete(`/api/v1/projects/:id/palettes/${id}`);
+      const expectedMsg = `Palette successfully deleted.`;
       expect(response.status).toBe(200);
       expect(response.text).toEqual(expectedMsg);
+    })
+    it('should return a 404 and error message if palette cannot be found', async () => {
+      const id = 999999
+      const expectedText = `Palette with id: ${id} was not found.`
+      const response = await request(app).delete(`/api/v1/projects/:id/palettes/${id}`)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(expectedText)
     })
   })
 });
