@@ -220,7 +220,7 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200);
       expect(response.text).toEqual(expectedMsg);
     })
-    it('should return a 404 if palette cannot be found', async () => {
+    it('should return a 404 and error message if palette cannot be found', async () => {
       const id = 999999
       const expectedText = `Palette with id: ${id} was not found.`
       const response = await request(app).delete(`/api/v1/projects/:id/palettes/${id}`)

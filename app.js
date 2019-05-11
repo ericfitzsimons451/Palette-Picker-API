@@ -15,7 +15,7 @@ app.get('/api/v1/projects', (request, response) => {
     .catch(error => {
       response.status(500).json({ error })
     })
-});
+})
 
 app.get('/api/v1/projects/:id', (request, response) => {
   database('projects').where('id', request.params.id).select()
@@ -30,7 +30,7 @@ app.get('/api/v1/projects/:id', (request, response) => {
     })
     .catch(error => {
       response.status(500).send({ error });
-    });
+    })
 });
 
 app.get('/api/v1/projects/:id/palettes', (request, response) => {
@@ -44,7 +44,7 @@ app.get('/api/v1/projects/:id/palettes', (request, response) => {
       }
     })
     .catch(error => {
-      response.status(500).send({ error });
+      response.status(500).send({ error })
     })
 })
 
@@ -74,12 +74,12 @@ app.post('/api/v1/projects', (request, response) => {
 
   database('projects').insert(project, 'id')
     .then(projects => {
-      response.status(201).json({ id: projects[0] });
+      response.status(201).json({ id: projects[0] })
     })
     .catch(error => {
-      response.status(500).send({ error });
-    });
-});
+      response.status(500).send({ error })
+    })
+})
 
 app.post('/api/v1/projects/:id/palettes', (request, response) => {
   const palette = request.body
@@ -116,24 +116,6 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
       }
     })
 })
-
-app.delete('/api/v1/projects/:id', (request, response) => {
-  const { id } = request.params;
-  database('palettes').where('project_id', id).del()
-    .then(rows => {
-      database('projects').where('id', id).del()
-        .then(result => {
-          if (result > 0) {
-            response.status(200).send(`Project with the id: ${id} and it's palettes have been deleted.`)
-          } else {
-            response.status(404).send(`Project with the id:${id} was not found.`)
-          }
-        })
-    })
-    .catch(error => {
-      response.status(500).json({ error })
-    })
-});
 
 app.put('/api/v1/projects/:id', (request, response) => {
   const { id } = request.params
@@ -192,6 +174,24 @@ app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
             response.status(200).json({ palette_id, ...request.body })
           })
       }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
+})
+
+app.delete('/api/v1/projects/:id', (request, response) => {
+  const { id } = request.params;
+  database('palettes').where('project_id', id).del()
+    .then(rows => {
+      database('projects').where('id', id).del()
+        .then(result => {
+          if (result > 0) {
+            response.status(200).send(`Project with the id: ${id} and it's palettes have been deleted.`)
+          } else {
+            response.status(404).send(`Project with the id:${id} was not found.`)
+          }
+        })
     })
     .catch(error => {
       response.status(500).json({ error })
