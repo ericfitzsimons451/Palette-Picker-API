@@ -223,7 +223,13 @@ describe('/api/v1', () => {
       const expectedMsg = `Project with the id: ${id} and it's palettes have been deleted.`;
       expect(response.status).toBe(200);
       expect(response.text).toBe(expectedMsg);
-    });
+    })
+    it('should return a 404 status and error message if project cant be found', async () => {
+      const id = 9999999
+      const response = await request(app).delete(`/api/v1/projects/${id}`)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(`Project with the id:${id} was not found.`)
+    })
   })
 
   describe('DELETE /palettes/:id', () => {
