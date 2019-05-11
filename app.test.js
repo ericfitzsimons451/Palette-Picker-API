@@ -220,5 +220,12 @@ describe('/api/v1', () => {
       expect(response.status).toBe(200);
       expect(response.text).toEqual(expectedMsg);
     })
+    it.skip('should return a 404 if palette cannot be found', async () => {
+      const id = 99999
+      const expectedText = `Error: Missing id from request parameters.`
+      const response = await request(app).get(`/api/v1/palettes/${id}`)
+      expect(response.status).toBe(404)
+      expect(response.text).toEqual(expectedText)
+    })
   })
 });

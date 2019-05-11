@@ -198,23 +198,29 @@ app.put('/api/v1/projects/:id/palettes/:palette_id', (request, response) => {
     })
 })
 
-app.delete('/api/v1/palettes/:id', (request, response) => {
-  const idForDelete = request.params.id
-  if (!idForDelete) {
-    response.status(422).send(`Error: Missing id from request parameters.`
-    )
-  } else {
-    database('palettes')
-      .where('id', request.params.id)
-      .del()
-      .then(() => {
-        response
-          .send(`Successfully deleted palette with id: ${idForDelete}.`)
+app.delete('/api/v1/projects/:id/palettes/:palette_id', (req, res) => {
+  const { palette_id } = req.params
+  let found = false
+
+  database('palettes').select()
+    .then(palettes => {
+      palettes.forEach(palette => {
+        if (palette.id === parseInt(palette_id)) {
+          found = true
+        }
       })
-      .catch(error => {
-        response.status(500).json({ error })
-      })
-  }
+      if (!found) {
+        return res.status(404).json(`Palette with id: ${palette_id} was not found.`)
+      } else {
+        database('palettes').where('id', parseInt(palette_id)).del()
+          .then(() => {
+            res.status(200).send(`Palette successfully deleted.`)
+          })
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error })
+    })
 })
 
 module.exports = app
