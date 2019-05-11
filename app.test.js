@@ -215,15 +215,15 @@ describe('/api/v1', () => {
     it('should delete a palette by id', async () => {
       const paletteToDelete = await database('palettes').first();
       const id = paletteToDelete.id      
-      const response = await request(app).delete(`/api/v1/palettes/${id}`);
-      const expectedMsg = `Successfully deleted palette with id: ${id}.`;
+      const response = await request(app).delete(`/api/v1/projects/:id/palettes/${id}`);
+      const expectedMsg = `Palette successfully deleted.`;
       expect(response.status).toBe(200);
       expect(response.text).toEqual(expectedMsg);
     })
-    it.skip('should return a 404 if palette cannot be found', async () => {
-      const id = 99999
-      const expectedText = `Error: Missing id from request parameters.`
-      const response = await request(app).get(`/api/v1/palettes/${id}`)
+    it('should return a 404 if palette cannot be found', async () => {
+      const id = 999999
+      const expectedText = `Palette with id: ${id} was not found.`
+      const response = await request(app).delete(`/api/v1/projects/:id/palettes/${id}`)
       expect(response.status).toBe(404)
       expect(response.text).toEqual(expectedText)
     })

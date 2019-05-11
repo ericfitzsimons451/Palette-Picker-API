@@ -210,7 +210,7 @@ app.delete('/api/v1/projects/:id/palettes/:palette_id', (req, res) => {
         }
       })
       if (!found) {
-        return res.status(404).json(`Palette with id: ${palette_id} was not found.`)
+        return res.status(404).send(`Palette with id: ${palette_id} was not found.`)
       } else {
         database('palettes').where('id', parseInt(palette_id)).del()
           .then(() => {
