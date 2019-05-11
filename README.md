@@ -176,7 +176,7 @@
 #### Reqired Parameters
 ```
 {
-    "project_name": "Justin's Project"
+    "project_name": <String>
 }
 ```
 #### Successful Response Example:
