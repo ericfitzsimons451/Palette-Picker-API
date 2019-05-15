@@ -9,7 +9,8 @@ app.use(cors())
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.get('/api/v1/projects', (request, response) => {
+
+app.get('/api/v1/projects', async (request, response) => {
   database('projects').select()
     .then(projects => {
       response.status(200).json(projects)
@@ -31,19 +32,30 @@ app.get('/api/v1/projects/:id', (request, response) => {
       }
     })
     .catch(error => {
-      response.status(500).send({ error });
+      response.status(500).send({ error })
     });
 });
 
 app.get('/api/v1/projects/:id/palettes', (request, response) => {
+  const colorToFind = request.query.color_one
   database('palettes')
     .where('project_id', request.params.id).select()
     .then(palettes => {
-      if (palettes.length) {
-        response.status(200).json(palettes)
+      if (colorToFind !== undefined) {
+        const foundPalette = palettes.find(palette => palette.color_one === colorToFind)
+        if (foundPalette) {
+          response.status(200).json(foundPalette)
+        } else {
+          response.status(404).send('Error: Specified palette not found.')
+        }
       } else {
-        response.status(404).send(`There are no palettes for project ${request.params.id}.`)
+        if (palettes.length) {
+          response.status(200).json(palettes)
+        } else {
+          response.status(404).send(`There are no palettes for project ${request.params.id}.`)
+        }
       }
+
     })
     .catch(error => {
       response.status(500).send({ error });
