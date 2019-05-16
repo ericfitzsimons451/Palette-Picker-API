@@ -240,12 +240,16 @@
 ## Screenshots
 ### Home View
 <img width="1179" alt="Screen Shot 2019-05-15 at 7 41 25 PM" src="https://user-images.githubusercontent.com/39415039/57820488-3d39e380-774a-11e9-9118-64fe97418343.png">
+
 ### Save Project View
 <img width="1166" alt="Screen Shot 2019-05-15 at 7 42 34 PM" src="https://user-images.githubusercontent.com/39415039/57820508-55a9fe00-774a-11e9-9a66-b701f2e4fd44.png">
+
 ### Save Existing Project Dropdown View
 <img width="1159" alt="Screen Shot 2019-05-15 at 7 42 42 PM" src="https://user-images.githubusercontent.com/39415039/57820516-5e023900-774a-11e9-8af1-ee806d6efa41.png">
+
 ### Drawer Open View
 <img width="1185" alt="Screen Shot 2019-05-15 at 7 42 53 PM" src="https://user-images.githubusercontent.com/39415039/57820521-635f8380-774a-11e9-896c-d520373c9e05.png">
+
 ### Drawer Open & Display Palette View
 <img width="1198" alt="Screen Shot 2019-05-15 at 7 44 47 PM" src="https://user-images.githubusercontent.com/39415039/57820531-6fe3dc00-774a-11e9-952b-641bf02b47f2.png">
 
