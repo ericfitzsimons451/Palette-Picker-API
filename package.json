@@ -23,7 +23,7 @@
     "express": "^4.16.4",
     "jest": "^24.8.0",
     "knex": "^0.16.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "pg": "^7.10.0"
   },
   "devDependencies": {
